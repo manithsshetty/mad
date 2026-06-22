@@ -1,0 +1,58 @@
+
+package com.example.texttospeech;
+
+import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import java.util.Locale;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText input;
+    private TextToSpeech tts;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        input = findViewById(R.id.input);
+        Button btn = findViewById(R.id.submit);
+
+        // Modern lambda listener replaces boilerplate anonymous class
+        tts = new TextToSpeech(this, status -> {
+            if (status != TextToSpeech.ERROR) {
+                tts.setLanguage(Locale.ENGLISH);
+                showToast("Text To Speech Ready", Toast.LENGTH_LONG);
+            }
+        });
+
+        // Inline click listener removes the need to implement View.OnClickListener globally
+        btn.setOnClickListener(v -> {
+            String text = input.getText().toString().trim();
+
+            if (text.isEmpty()) {
+                showToast("Please Enter Text", Toast.LENGTH_SHORT);
+            } else {
+                tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+            }
+        });
+    }
+
+    // Helper method to reduce repetitive Toast code
+    private void showToast(String message, int duration) {
+        Toast.makeText(this, message, duration).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+        }
+        super.onDestroy();
+    }
+}

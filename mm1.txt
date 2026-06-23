@@ -1,0 +1,392 @@
+visiting card 
+
+package com.example.visitingcard; 
+
+import androidx.appcompat.app.AppCompatActivity; 
+import android.os.Bundle; 
+
+public class MainActivity extends AppCompatActivity { 
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+    } 
+}
+
+calculator application
+
+java code 
+
+
+package com.example.calculator;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.*;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText n1, n2;
+    TextView res;
+    double a, b, answer;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        n1 = findViewById(R.id.num1);
+        n2 = findViewById(R.id.num2);
+        res = findViewById(R.id.result);
+
+        Button add = findViewById(R.id.add);
+        Button sub = findViewById(R.id.sub);
+        Button mul = findViewById(R.id.mul);
+        Button div = findViewById(R.id.div);
+        Button equal = findViewById(R.id.equal);
+
+        View.OnClickListener listener = v -> {
+            if (n1.getText().toString().isEmpty() || n2.getText().toString().isEmpty()) {
+                res.setText("Please enter numbers");
+                return;
+            }
+
+            a = Double.parseDouble(n1.getText().toString());
+            b = Double.parseDouble(n2.getText().toString());
+
+            if (v.getId() == R.id.add) answer = a + b;
+            if (v.getId() == R.id.sub) answer = a - b;
+            if (v.getId() == R.id.mul) answer = a * b;
+            if (v.getId() == R.id.div) {
+                if (b == 0) {
+                    res.setText("Cannot divide by zero");
+                    return;
+                }
+                answer = a / b;
+            }
+
+            res.setText("Result = " + answer);
+        };
+
+        add.setOnClickListener(listener);
+        sub.setOnClickListener(listener);
+        mul.setOnClickListener(listener);
+        div.setOnClickListener(listener);
+        equal.setOnClickListener(listener);
+    }
+}
+
+xml code 
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/num1"
+        android:hint="Enter First Number"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/num2"
+        android:hint="Enter Second Number"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/result"
+        android:text="Result"
+        android:textSize="22sp"
+        android:padding="10dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal">
+
+        <Button android:id="@+id/add" android:text="+"/>
+        <Button android:id="@+id/sub" android:text="-"/>
+        <Button android:id="@+id/mul" android:text="*"/>
+        <Button android:id="@+id/div" android:text="/"/>
+        <Button android:id="@+id/equal" android:text="="/>
+    </LinearLayout>
+</LinearLayout>
+
+
+login and sign up
+
+
+Login and signup 
+Main activity java 
+package com.example.parta.program3;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText user, pass;
+    Button signup;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        user = findViewById(R.id.txt_username);
+        pass = findViewById(R.id.txt_password);
+        signup = findViewById(R.id.btn_signup);
+
+        signup.setOnClickListener(v -> {
+
+            String username = user.getText().toString();
+            String password = pass.getText().toString();
+
+            if (password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!]).{8,}$")) {
+
+                Bundle bundle = new Bundle();
+                bundle.putString("user", username);
+                bundle.putString("Lab@2018", password);
+
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.putExtra("data", bundle);
+                startActivity(intent);
+
+            } else {
+                Toast.makeText(MainActivity.this,
+                        "Invalid Password",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+}
+
+
+package com.example.parta.program3;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class LoginActivity extends AppCompatActivity {
+
+    EditText username, password;
+    Button login;
+    String user, pass;
+    int count = 0;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        username = findViewById(R.id.txt_login_username);
+        password = findViewById(R.id.txt_login_password);
+        login = findViewById(R.id.btn_login_signin);
+
+        Bundle b = getIntent().getBundleExtra("data");
+        if (b != null) {
+            user = b.getString("user");
+            pass = b.getString("Lab@2018");
+        }
+
+        login.setOnClickListener(v -> {
+
+            String u = username.getText().toString();
+            String p = password.getText().toString();
+
+            if (u.equals(user) && p.equals(pass)) {
+                Toast.makeText(LoginActivity.this,
+                        "Login Successful",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                count++;
+
+                if (count == 3) {
+                    login.setEnabled(false);
+                    Toast.makeText(LoginActivity.this,
+                            "Failed Login Attempts",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoginActivity.this,
+                            "Login Failed " + count,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+}
+
+xml code 
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/txt_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Username"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/txt_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Password"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign Up"/>
+</LinearLayout>
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <EditText
+        android:id="@+id/txt_login_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/txt_login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_login_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign In"/>
+</LinearLayout>
+
+wallpaper application
+
+java code 
+
+package com.example.wallpaper; 
+
+import androidx.appcompat.app.AppCompatActivity;  
+import android.app.WallpaperManager; 
+import android.graphics.BitmapFactory; 
+import android.os.Bundle; 
+import android.view.View;  
+import android.widget.Button; 
+import java.util.Random;  
+import java.util.Timer;  
+import java.util.TimerTask; 
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener { 
+    Boolean running = false; 
+    Button chnge; 
+    int i = 1; 
+    
+    int[] images = new int[]{
+        R.drawable.imga, R.drawable.imgb, R.drawable.imgc, 
+        R.drawable.imgd, R.drawable.imge, R.drawable.imgf
+    }; 
+ 
+    @Override 
+    protected void onCreate(Bundle savedInstanceState) { 
+        super.onCreate(savedInstanceState); 
+        setContentView(R.layout.activity_main); 
+ 
+        chnge = findViewById(R.id.chng); 
+        chnge.setOnClickListener(this); 
+    } 
+ 
+    @Override 
+    public void onClick(View view) { 
+        if (!running) { 
+            new Timer().schedule(new MyTimer(), 0, 3000);  
+            running = true; 
+        } 
+    } 
+
+    class MyTimer extends TimerTask { 
+        public void run() { 
+            try { 
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance(getBaseContext());  
+                Random rand = new Random(); 
+                i = rand.nextInt(6); 
+                wallpaperManager.setBitmap(BitmapFactory.decodeResource(getResources(), images[i])); 
+            } catch (Exception e) { 
+                e.printStackTrace();
+            } 
+        } 
+    } 
+}
+
+
+xml code 
+
+<?xml version="1.0" encoding="utf-8"?> 
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:app="http://schemas.android.com/apk/res-auto" 
+    xmlns:tools="http://schemas.android.com/tools" 
+    android:layout_width="match_parent" 
+    android:layout_height="match_parent" 
+    android:background="#F6E8BF" 
+    tools:context=".MainActivity"> 
+
+    <Button 
+        android:id="@+id/chng" 
+        android:layout_width="237dp"  
+        android:layout_height="104dp"  
+        android:background="#E8BC39"  
+        android:text="Click here To Change Wallpaper" 
+        app:layout_constraintBottom_toBottomOf="parent" 
+        app:layout_constraintEnd_toEndOf="parent" 
+        app:layout_constraintHorizontal_bias="0.497" 
+        app:layout_constraintStart_toStartOf="parent" 
+        app:layout_constraintTop_toTopOf="parent" 
+        app:layout_constraintVertical_bias="0.515"/> 
+ 
+    <TextView 
+        android:id="@+id/textView" 
+        android:layout_width="376dp" 
+        android:layout_height="58dp" 
+        android:fontFamily="casual" 
+        android:text="CHANGING\nWALLPAPER APPLICATION" 
+        android:textColor="#009688" 
+        android:textSize="20sp"  
+        android:textStyle="bold|italic"  
+        app:layout_constraintBottom_toTopOf="@+id/chng" 
+        app:layout_constraintEnd_toEndOf="parent" 
+        app:layout_constraintStart_toStartOf="parent" 
+        app:layout_constraintTop_toTopOf="parent" 
+        app:layout_constraintVertical_bias="0.501" /> 
+</androidx.constraintlayout.widget.ConstraintLayout>
